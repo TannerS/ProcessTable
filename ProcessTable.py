@@ -36,8 +36,7 @@ class ProcessTable:
                 # need to break from outter loop to prevent exception
                 break
 
-
-    def printTable(self):
+    def printProcess(self):
         # http://stackoverflow.com/questions/18601688/python-prettytable-example
         table = prettytable.PrettyTable(["PID", "PROGRAM", "USER", "STATUS", "PC", "SP","R0", "R1", "R2", "R3"])
         for key, value in self.processes.items():
@@ -45,27 +44,59 @@ class ProcessTable:
         print(table)
 
 
-    def killPID(self, pid):
+    def killProcess(self, pid):
         for key, value in self.processes.items():
             if value.status == 0:
                 if (value.username == "root") or (value.username == self.processes[pid].username):
                     # http://stackoverflow.com/questions/11277432/how-to-remove-a-key-from-a-python-dictionary
                     self.processes.pop(pid, None)
+                    break
 
-    def execve(self, program, user):
+    def execveProcess(self, program, user):
         for key, value in self.processes.items():
             if value.status == 0:
                 value.program = program
                 value.username = user
                 value.registers = Registers(self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue())
+                break
 
-
-    def block(self):
+    def blockProcess(self):
         for key, value in self.processes.items():
             if value.status == 0:
                 value.status = 2
                 keys = list(self.processes.keys())
-                print(keys)
-                print(len(keys))
-                random_pid = keys[randint(0, len(keys) - 1)]
-                self.processes[random_pid].status = 0
+                while True:
+                    random_pid = keys[randint(0, len(keys) - 1)]
+                    if self.processes[random_pid].status == 1:
+                        self.processes[random_pid].status = 0
+                        break
+                break
+
+    def unblockProcess(self, pid):
+        for key, value in self.processes.items():
+            if key == pid and value.status == 2:
+                value.status = 1
+
+    def yieldProcess(self):
+        for key, value in self.processes.items():
+            if value.status == 0:
+                value.status = 1
+                keys = list(self.processes.keys())
+                while True:
+                    random_pid = keys[randint(0, len(keys) - 1)]
+                    if self.processes[random_pid].status == 1:
+                        self.processes[random_pid].status = 0
+                        break
+                break
+
+    def exitProcess(self):
+        for key, value in self.processes.items():
+            if value.status == 0:
+                self.processes.pop(key, None)
+                keys = list(self.processes.keys())
+                while True:
+                    random_pid = keys[randint(0, len(keys) - 1)]
+                    if self.processes[random_pid].status == 1:
+                        self.processes[random_pid].status = 0
+                        break
+                break

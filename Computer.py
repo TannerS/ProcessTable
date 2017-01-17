@@ -18,4 +18,4 @@ class Computer:
     def print(self):
         self.cpu.printRegisters()
         print()
-        self.process_table.printTable()
+        self.process_table._print_()

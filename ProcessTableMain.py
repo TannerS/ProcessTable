@@ -11,23 +11,23 @@ def main():
         if response[0] == "fork":
             computer.process_table.forkProcess()
         elif response[0] == "kill":
-            computer.process_table.killPID(int(response[1]))
+            computer.process_table.killProcess(int(response[1]))
         elif response[0] == "execve":
-            computer.process_table.execve(response[1], response[2])
+            computer.process_table.execveProcess(response[1], response[2])
             computer.cpu.registers = computer.process_table.getRunningProcessRegisters()
         elif response[0] == "block":
-            computer.process_table.block()
+            computer.process_table.blockProcess()
             computer.cpu.registers = computer.process_table.getRunningProcessRegisters()
         elif response[0] == "yield":
-            print("debug 5")
+            computer.process_table.yieldProcess()
+            computer.cpu.registers = computer.process_table.getRunningProcessRegisters()
         elif response[0] == "exit":
-            print("")
+            computer.process_table.exitProcess()
+            computer.cpu.registers = computer.process_table.getRunningProcessRegisters()
         elif response[0] == "print":
             computer.print()
         elif response[0] == "unblock":
-            print("debug 8")
-        elif response[0] == "unblock":
-            print("debug 9")
+            computer.process_table.unblockProcess(response[1])
         elif response[0] == "quit":
             break
         else:
