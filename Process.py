@@ -9,15 +9,3 @@ class Process:
         self.username = username
         self.status = status
         self.registers = registers
-
-    def getRegisters(self):
-        return self.registers
-
-    def getStatus(self):
-        return self.status
-
-    def getProgram(self):
-        return self.program
-
-    def getUserName(self):
-        return self.username

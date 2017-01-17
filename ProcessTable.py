@@ -10,21 +10,62 @@ class ProcessTable:
     # http://stackoverflow.com/questions/8985806/python-constructors-and-init
     # http://stackoverflow.com/questions/625083/python-init-and-self-what-do-they-do
     def __init__(self):
-        self.processes = {"1": Process("init", "root", 0, Registers(self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue()))}
+        self.processes = {1: Process("init", "root", 0, Registers(self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue()))}
 
     def random32BitHexValue(self):
         return randint(0x0, 0xFFFFFFFF)
+
+    def randomPID(self):
+        return randint(0, 5000)
 
     def getRunningProcessRegisters(self):
         for key, value in self.processes.items():
             if(value.status == 0):
                 return value.registers
 
+    def forkProcess(self):
+        for key, value in self.processes.items():
+            if (value.status == 0):
+                new_process = Process(value.program, value.username, 1, value.registers)
+                # http://stackoverflow.com/questions/1602934/check-if-a-given-key-already-exists-in-a-dictionary
+                while True:
+                    num = self.randomPID()
+                    if num not in self.processes:
+                        break
+                self.processes[num] = new_process
+                # need to break from outter loop to prevent exception
+                break
+
+
     def printTable(self):
-        # stackoverflow.com/questions/10623727/python-spacing-and-aligning-strings
+        # http://stackoverflow.com/questions/18601688/python-prettytable-example
         table = prettytable.PrettyTable(["PID", "PROGRAM", "USER", "STATUS", "PC", "SP","R0", "R1", "R2", "R3"])
-        #print(("PID {0:12} PROGRAM {0:12} USER {0:12} STATUS {0:12} PC {0:12} SP {0:12} R0 {0:12} R1 {0:12} R2 {0:12} R3").format("","","","","","","","",""))
         for key, value in self.processes.items():
             table.add_row([str(key), value.program, value.username, str(value.status), ("0x" + str(format(value.registers.pc, '8X'))), ("0x" + str(format(value.registers.sp, '8X'))), ("0x" + str(format(value.registers.r0, '8X'))), ("0x" + str(format(value.registers.r1, '8X'))), ("0x" + str(format(value.registers.r2, '8X'))), ("0x" + str(format(value.registers.r3, '8X')))])
         print(table)
 
+
+    def killPID(self, pid):
+        for key, value in self.processes.items():
+            if value.status == 0:
+                if (value.username == "root") or (value.username == self.processes[pid].username):
+                    # http://stackoverflow.com/questions/11277432/how-to-remove-a-key-from-a-python-dictionary
+                    self.processes.pop(pid, None)
+
+    def execve(self, program, user):
+        for key, value in self.processes.items():
+            if value.status == 0:
+                value.program = program
+                value.username = user
+                value.registers = Registers(self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue(), self.random32BitHexValue())
+
+
+    def block(self):
+        for key, value in self.processes.items():
+            if value.status == 0:
+                value.status = 2
+                keys = list(self.processes.keys())
+                print(keys)
+                print(len(keys))
+                random_pid = keys[randint(0, len(keys) - 1)]
+                self.processes[random_pid].status = 0

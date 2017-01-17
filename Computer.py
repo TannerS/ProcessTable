@@ -7,10 +7,13 @@ class Computer:
     cpu = None
     process_table = None
 
-    def startPc(self):
+    # def startPc(self):
+    #     self.process_table = ProcessTable()
+    #self.cpu = CPU(self.process_table.getRunningProcessRegisters())
+
+    def  __init__(self):
         self.process_table = ProcessTable()
         self.cpu = CPU(self.process_table.getRunningProcessRegisters())
-
 
     def print(self):
         self.cpu.printRegisters()
