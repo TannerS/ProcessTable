@@ -51,6 +51,16 @@ class ProcessTable:
         if (self.processes[self.running_pid].username == "root") or (self.processes[self.running_pid].username == self.processes[pid].username):
             # http://stackoverflow.com/questions/11277432/how-to-remove-a-key-from-a-python-dictionary
             self.processes.pop(pid, None)
+            if len(self.processes) == 0:
+                self.running_pid = -1
+            else:
+                if pid == self.running_pid:
+                    keys = list(self.processes.keys())
+                    random_pid = keys[randint(0, len(keys) - 1)]
+                    self.processes[random_pid].status = 0
+                    self.running_pid = random_pid
+
+
 
     def execveProcess(self, program, user):
         if (self.processes[self.running_pid].username == "root") or (self.processes[self.running_pid].username == user):

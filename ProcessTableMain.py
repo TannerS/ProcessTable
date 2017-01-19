@@ -1,6 +1,5 @@
 from Computer import Computer
 
-
 def main():
     computer = Computer()
 
@@ -12,10 +11,13 @@ def main():
             if response[0] == "fork":
                 computer.process_table.forkProcess()
             elif response[0] == "kill":
-                computer.process_table.killProcess(int(response[1]))
+                if len(response) > 1:
+                    computer.process_table.killProcess(int(response[1]))
+                    computer.cpu.registers = computer.process_table.getRunningProcessRegisters()
             elif response[0] == "execve":
-                computer.process_table.execveProcess(response[1], response[2])
-                computer.cpu.registers = computer.process_table.getRunningProcessRegisters()
+                if len(response) > 2:
+                    computer.process_table.execveProcess(response[1], response[2])
+                    computer.cpu.registers = computer.process_table.getRunningProcessRegisters()
             elif response[0] == "block":
                 computer.process_table.blockProcess()
                 computer.cpu.registers = computer.process_table.getRunningProcessRegisters()
@@ -28,11 +30,12 @@ def main():
             elif response[0] == "print":
                 computer.print()
             elif response[0] == "unblock":
-                computer.process_table.unblockProcess(response[1])
+                if len(response) > 1:
+                    computer.process_table.unblockProcess(response[1])
             elif response[0] == "quit":
                 break
             else:
-                print("Unknow command")
+                print("Unknown command")
 
 
 if __name__ == '__main__':
