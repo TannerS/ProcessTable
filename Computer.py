@@ -16,6 +16,8 @@ class Computer:
         self.cpu = CPU(self.process_table.getRunningProcessRegisters())
 
     def print(self):
+        print()
+        print()
         self.cpu.printRegisters()
         print()
-        self.process_table._print_()
+        self.process_table.printProcess()

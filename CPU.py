@@ -1,3 +1,5 @@
+import prettytable
+
 class CPU:
     registers = None
 
@@ -6,12 +8,10 @@ class CPU:
 
 
     def printRegisters(self):
-        print("PC = " + "0x" + str(format(self.registers.pc, '8X')), end=" ")
-        print("SP = " + "0x" + str(format(self.registers.sp, '8X')))
-        print(" ")
-        print("R0 = " + "0x" + str(format(self.registers.r0, '8X')), end=" ")
-        print("R1 = " + "0x" + str(format(self.registers.r1, '8X')))
-        print(" ")
-        print("R2 = " + "0x" + str(format(self.registers.r2, '8X')), end=" ")
-        print("R3 = " + "0x" + str(format(self.registers.r3, '8X')))
-        print(" ")
+        print("CPU")
+        # http://stackoverflow.com/questions/18601688/python-prettytable-example
+        table = prettytable.PrettyTable(["PC", "SP","R0", "R1", "R2", "R3"])
+        if self.registers != None:
+            table.add_row([("0x" + str(format(self.registers.pc, '08X'))), ("0x" + str(format(self.registers.sp, '08X'))), ("0x" + str(format(self.registers.r0, '08X'))), ("0x" + str(format(self.registers.r1, '08X'))), ("0x" + str(format(self.registers.r2, '08X'))), ("0x" + str(format(self.registers.r3, '08X')))])
+        print(table)
+
